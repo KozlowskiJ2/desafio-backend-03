@@ -27,8 +27,8 @@ rotas.put('/perfil', perfil.atualizarPerfil);
 
 rotas.get('/produtos', produtos.consultarProdutos);
 rotas.get('/produtos/:id', produtos.obterProduto);
-rotas.post('/produtos', produtos.cadastrarProduto);
-rotas.put('/produtos/:id', produtos.atualizarProduto);
+rotas.post('/produtos',produtos.verificarProduto, produtos.cadastrarProduto);
+rotas.put('/produtos/:id', produtos.verificarProduto, produtos.atualizarProduto);
 rotas.delete('/produtos/:id', produtos.deletarProduto);
 
 

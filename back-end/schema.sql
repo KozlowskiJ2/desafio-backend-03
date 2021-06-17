@@ -1,3 +1,4 @@
+DROP DATABASE market_cubos;
 CREATE DATABASE market_cubos;
 
 CREATE TABLE usuarios(
