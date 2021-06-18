@@ -1,15 +1,15 @@
-const { Pool } = require('pg');
+const {Pool} = require('pg');
 
 const pool = new Pool({
-    user:'postgres',
-    host:'localhost',
-    database:'market_cubos',
-    password:'132104',
-    port:'5432'
+  user: 'postgres',
+  host: 'localhost',
+  database: 'market_cubos',
+  password: '132104',
+  port: '5432',
 });
 
-const query  = (text, param) => {
-    return pool.query(text,param);
-}
+const query = (text, param) => {
+  return pool.query(text, param);
+};
 
 module.exports = {query};

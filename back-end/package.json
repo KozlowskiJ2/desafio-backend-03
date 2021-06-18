@@ -4,7 +4,7 @@
   "description": "![](https://i.imgur.com/xG74tOh.png)",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon index.js"
+    "dev": "npx nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +15,9 @@
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.7",
     "pg": "^8.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.29.0",
+    "eslint-config-google": "^0.14.0"
   }
 }
