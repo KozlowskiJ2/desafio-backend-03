@@ -12,10 +12,10 @@ const consultarPerfil = (req,res) => {
 const atualizarPerfil = async (req,res) => {
     const usuario = req.usuario;
     const{nome,email,senha,nome_loja} = req.body;
-    verificaEmail(email, res);
-    verificaNome(nome, res);
-    verificaSenha(senha, res);
-    verificaLoja(nome_loja, res);
+    await verificaEmail(email, res);
+    await verificaNome(nome, res);
+    await verificaSenha(senha, res);
+    await verificaLoja(nome_loja, res);
 
     try {
         const verificarEmail = 'select * from usuarios where email = $1 and id <> $2';

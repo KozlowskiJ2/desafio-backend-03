@@ -1,33 +1,27 @@
 const conexao = require('../conexao');
-const {verificaNome, verificaEstoque,verificaPreco,verificaDescricao} = require('../filtros/verificaCampos');
+const filtroProdutos = require('../filtros/filtroDeProdutos');
+const { verificaNome, verificaEstoque, verificaPreco, verificaDescricao, verificaPropriedade } = require('../filtros/verificaCampos');
 
 
-const consultarProdutos = async (req,res) => {
-    const usuario = req.usuario;
-    try {
-        const selecionaProdutos = 'select * from produtos where usuario_id = $1';
-        const {rows,rowCount} = await conexao.query(selecionaProdutos,[usuario.id]);
-
-        if(rowCount === 0){
-            return res.status(404).json('Não existem produtos para o usuário!');
-        }
-
-        return res.status(200).json(rows);
-
-    } catch (error) {
-        return res.status(400).json(error.message);
-    }
+const consultarProdutos = async (req, res) => {
+    const { categoria, precoInicial, precoFinal } = req.query;
+    const selecionaProdutos = '';
+    await filtroProdutos(req,res);
 }
 
-const obterProduto = async (req,res) => {
-    const usuario = req.usuario;
-    const {id} = req.params;
-    try {
-        const selecionaProdutos = 'select * from produtos where usuario_id = $1 and id = $2';
-        const {rows,rowCount} = await conexao.query(selecionaProdutos,[usuario.id, id]);
 
-        if(rowCount === 0){
-            return res.status(404).json('Você não tem produtos com esse ID.');
+
+const obterProduto = async (req, res) => {
+    const { usuario } = req;
+    const { id } = req.params;
+
+    try {
+        verificaPropriedade(usuario.id, id, res)
+        const selecionaProduto = 'select * from produtos where id = $1';
+        const { rows, rowCount } = await conexao.query(selecionaProduto, [id]);
+
+        if (rowCount === 0) {
+            return res.status(404).json('Erro ao selecionar produto!');
         }
 
         return res.status(200).json(rows[0]);
@@ -37,23 +31,24 @@ const obterProduto = async (req,res) => {
     }
 }
 
-const verificarProduto = async(req,res,next) =>{
-    const{nome,estoque,preco,descricao} = req.body;
-    verificaNome(nome,res);
-    verificaEstoque(estoque,res);
-    verificaPreco(preco,res);
-    verificaDescricao(descricao,res);
+const verificarProduto = async (req, res, next) => {
+    const { nome, estoque, preco, descricao } = req.body;
+    await verificaNome(nome, res);
+    await verificaEstoque(estoque, res);
+    await verificaPreco(preco, res);
+    await verificaDescricao(descricao, res);
     next();
 }
 
-const cadastrarProduto = async (req,res) => {
+const cadastrarProduto = async (req, res) => {
     const usuario = req.usuario;
-    const{nome,estoque,preco,descricao,categoria,imagem} = req.body;
+    const { nome, estoque, preco, descricao, categoria, imagem } = req.body;
+
     try {
         const cadastro = 'insert into produtos (usuario_id,nome,estoque,categoria,preco,descricao,imagem) values ($1,$2,$3,$4,$5,$6,$7)';
-        const {rowCount} = conexao.query(cadastro,[usuario.id,nome,estoque,categoria,preco,descricao,imagem]);
+        const { rowCount } = conexao.query(cadastro, [usuario.id, nome, estoque, categoria, preco, descricao, imagem]);
 
-        if(rowCount === 0){
+        if (rowCount === 0) {
             return res.status(400).json('Erro ao cadastrar produto!');
         }
 
@@ -64,15 +59,17 @@ const cadastrarProduto = async (req,res) => {
     }
 }
 
-const atualizarProduto = async (req,res) => {
+const atualizarProduto = async (req, res) => {
     const usuario = req.usuario;
-    const{nome,estoque,preco,descricao,categoria,imagem} = req.body;
-    const {id} = req.params;
-    try {
-        const atualizar = 'update produtos set nome = $1, estoque = $2, categoria = $3, preco = $4,descricao = $5, imagem = $6 where id = $7';
-        const {rowCount} = conexao.query(atualizar,[nome,estoque,categoria,preco,descricao,imagem,id]);
+    const { nome, estoque, preco, descricao, categoria, imagem } = req.body;
+    const { id } = req.params;
 
-        if(rowCount === 0){
+    try {
+        verificaPropriedade(usuario.id, id, res);
+        const atualizar = 'update produtos set nome = $1, estoque = $2, categoria = $3, preco = $4,descricao = $5, imagem = $6 where id = $7';
+        const { rowCount } = conexao.query(atualizar, [nome, estoque, categoria, preco, descricao, imagem, id]);
+
+        if (rowCount === 0) {
             return res.status(400).json('Erro ao atualizar produto!');
         }
 
@@ -84,14 +81,15 @@ const atualizarProduto = async (req,res) => {
 }
 
 
-const deletarProduto = async (req,res) => {
+const deletarProduto = async (req, res) => {
     const usuario = req.usuario;
-    const {id} = req.params;
+    const { id } = req.params;
     try {
-        const selecionaProdutos = 'delete from produtos where usuario_id = $1 and id = $2';
-        const {rowCount} = await conexao.query(selecionaProdutos,[usuario.id, id]);
+        verificaPropriedade(usuario.id, id, res);
+        const selecionaProdutos = 'delete from produtos where id = $1';
+        const { rowCount } = await conexao.query(selecionaProdutos, [id]);
 
-        if(rowCount === 0){
+        if (rowCount === 0) {
             return res.status(404).json('Erro ao deletar produto!');
         }
 
