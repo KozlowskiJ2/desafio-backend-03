@@ -1,5 +1,4 @@
 const conexao = require('../conexao');
-const key = require('../jwt');
 const jwt = require('jsonwebtoken');
 
 const verificaToken = async (req, res, next) => {
@@ -10,7 +9,7 @@ const verificaToken = async (req, res, next) => {
   }
   try {
     const token = authorization.replace('Bearer', '').trim();
-    const {id} = jwt.verify(token, key);
+    const {id} = jwt.verify(token, process.env.JWT_KEY);
     const query = 'select * from usuarios where id = $1';
     const {rows, rowCount} = await conexao.query(query, [id]);
 

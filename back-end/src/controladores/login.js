@@ -1,6 +1,5 @@
 const conexao = require('../conexao');
 const {verificaEmail, verificaSenha} = require('../filtros/verificaCampos');
-const key = require('../jwt');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const loginUsuario = async (req, res) => {
@@ -25,7 +24,7 @@ const loginUsuario = async (req, res) => {
       return res.status(400).json('Usuário ou senha inválidos!');
     }
 
-    const token = jwt.sign({id: usuario.id}, key);
+    const token = jwt.sign({id: usuario.id}, process.env.JWT_KEY);
 
     return res.status(200).json({
       Usuário: {
