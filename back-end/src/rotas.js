@@ -2,7 +2,7 @@ const express = require('express');
 const cadastrarUsuario = require('./controladores/cadastro');
 const loginUsuario = require('./controladores/login');
 const perfil = require('./controladores/perfil');
-const produtos = require('./controladores/produtos');
+const produtos = require('./controladores/produto/produtos');
 const verificaToken = require('./filtros/verificaToken');
 const rotas = express();
 

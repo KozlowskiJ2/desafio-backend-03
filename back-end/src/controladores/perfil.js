@@ -1,6 +1,10 @@
 const conexao = require('../conexao');
-const {verificaEmail, verificaNome, verificaSenha, verificaLoja} = require('../filtros/verificaCampos');
+const { verificaEmail, verificaNome, verificaSenha, verificaLoja } = require('../filtros/verificaCampos');
+const yup = require('yup');
+const { pt } = require('yup-locales');
+const { setLocale } = require('yup');
 const bcrypt = require('bcrypt');
+
 const consultarPerfil = (req, res) => {
   const usuario = req.usuario;
 
@@ -9,15 +13,17 @@ const consultarPerfil = (req, res) => {
 
 const atualizarPerfil = async (req, res) => {
   const usuario = req.usuario;
-  const {nome, email, senha, nome_loja: nomeLoja} = req.body;
-  await verificaEmail(email, res);
-  await verificaNome(nome, res);
-  await verificaSenha(senha, res);
-  await verificaLoja(nomeLoja, res);
+  const { nome, email, senha, nome_loja: nomeLoja } = req.body;
+  const schema = yup.object().shape({
+    email: yup.string().email().required(),
+    senha: yup.string().required(),
+    nome: yup.string().required(),
+    nome_loja: yup.string().required()});
 
   try {
+    await schema.validate(req.body);
     const verificarEmail = 'select * from usuarios where email = $1 and id <> $2';
-    const {rowCount: validaEmail} = await conexao.query(verificarEmail, [email, usuario.id]);
+    const { rowCount: validaEmail } = await conexao.query(verificarEmail, [email, usuario.id]);
 
     if (validaEmail) {
       res.status(400).json('Email não disponível');
@@ -27,7 +33,7 @@ const atualizarPerfil = async (req, res) => {
 
     const atualização = 'update usuarios set nome = $1, email = $2,senha = $3,nome_loja = $4 where id = $5';
 
-    const {rowCount} = await conexao.query(atualização, [nome, email, senhaCrypt, nomeLoja, usuario.id]);
+    const { rowCount } = await conexao.query(atualização, [nome, email, senhaCrypt, nomeLoja, usuario.id]);
 
     if (rowCount === 0) {
       return res.status(400).json('Não foi possível atualizar seus dados.');
