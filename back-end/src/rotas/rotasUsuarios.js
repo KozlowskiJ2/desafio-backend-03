@@ -1,8 +1,8 @@
 const express = require('express');
-const cadastrarUsuario = require('./controladores/usuario/cadastro');
-const loginUsuario = require('./controladores/usuario/login');
-const perfil = require('./controladores/usuario/perfil');
-const verificaToken = require('./intermediarios/verificaToken');
+const cadastrarUsuario = require('../controladores/usuario/cadastro');
+const loginUsuario = require('../controladores/usuario/login');
+const perfil = require('../controladores/usuario/perfil');
+const verificaToken = require('../intermediarios/verificaToken');
 const rotasUsuario = express();
 rotasUsuario.post('/usuarios', cadastrarUsuario);
 
