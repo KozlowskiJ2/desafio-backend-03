@@ -35,7 +35,7 @@ const atualizarPerfil = async (req, res) => {
 
     res.status(200).json('Dados atualizados com sucesso!');
   } catch (error) {
-    return res.status(400).json(error.message);
+    return res.status(400).json(error.message).status(400);
   }
 };
 

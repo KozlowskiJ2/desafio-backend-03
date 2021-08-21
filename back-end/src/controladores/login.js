@@ -1,14 +1,21 @@
 const conexao = require('../conexao');
-const {verificaEmail, verificaSenha} = require('../filtros/verificaCampos');
 const jwt = require('jsonwebtoken');
+const yup = require('yup');
+const { pt } = require('yup-locales');
+const { setLocale } = require('yup');
+setLocale(pt);
 const bcrypt = require('bcrypt');
+
+
 const loginUsuario = async (req, res) => {
   const {email, senha} = req.body;
 
-  verificaEmail(email, res);
-  verificaSenha(senha, res);
+  const schema = yup.object().shape({
+    email:yup.string().email().required(),
+    senha:yup.string().required()});
 
   try {
+    await schema.validate(req.body);
     const consultarEmail = 'select * from usuarios where email = $1';
     const {rows, rowCount: emailVerificado} = await conexao.query(consultarEmail, [email]);
 
@@ -35,7 +42,7 @@ const loginUsuario = async (req, res) => {
       },
       token: token});
   } catch (error) {
-    return res.status.json(error.message);
+    return res.status(400).json(error.message);
   }
 };
 
