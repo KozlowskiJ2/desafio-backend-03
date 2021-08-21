@@ -1,19 +1,13 @@
-const conexao = require('../conexao');
+const conexao = require('../../servicos/conexao');
 const yup = require('yup');
 const { pt } = require('yup-locales');
+const schema = require('../../modelos/yupCadastroUsuario');
 const { setLocale } = require('yup');
 setLocale(pt);
 const bcrypt = require('bcrypt');
 
 const cadastrarUsuario = async (req, res) => {
   const {nome, email, senha, nome_loja: nomeLoja} = req.body;
-
-  const schema = yup.object().shape({
-    email: yup.string().email().required(),
-    senha: yup.string().required(),
-    nome: yup.string().required(),
-    nome_loja: yup.string().required()});
-
 
   try {
     await schema.validate(req.body);

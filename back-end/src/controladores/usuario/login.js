@@ -1,6 +1,7 @@
-const conexao = require('../conexao');
+const conexao = require('../../servicos/conexao');
 const jwt = require('jsonwebtoken');
 const yup = require('yup');
+const schema = require('../../modelos/yupLogin');
 const { pt } = require('yup-locales');
 const { setLocale } = require('yup');
 setLocale(pt);
@@ -9,11 +10,7 @@ const bcrypt = require('bcrypt');
 
 const loginUsuario = async (req, res) => {
   const {email, senha} = req.body;
-
-  const schema = yup.object().shape({
-    email:yup.string().email().required(),
-    senha:yup.string().required()});
-
+  
   try {
     await schema.validate(req.body);
     const consultarEmail = 'select * from usuarios where email = $1';

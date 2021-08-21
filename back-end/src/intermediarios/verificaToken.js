@@ -1,4 +1,4 @@
-const conexao = require('../conexao');
+const conexao = require('../servicos/conexao');
 const jwt = require('jsonwebtoken');
 
 const verificaToken = async (req, res, next) => {

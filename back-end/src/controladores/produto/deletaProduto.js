@@ -1,3 +1,5 @@
+const conexao = require('../../servicos/conexao');
+const verificaPropriedade = require("../usuario/verificaPropriedade");
 const deletarProduto = async (req, res) => {
     const usuario = req.usuario;
     const {id} = req.params;
@@ -15,3 +17,5 @@ const deletarProduto = async (req, res) => {
       return res.status(400).json(error.message);
     }
   };
+
+module.exports = deletarProduto;

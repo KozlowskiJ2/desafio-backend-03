@@ -1,5 +1,5 @@
-const conexao = require('../conexao');
-const { verificaEmail, verificaNome, verificaSenha, verificaLoja } = require('../filtros/verificaCampos');
+const conexao = require('../../servicos/conexao');
+const schema = require('../../modelos/yupCadastroUsuario');
 const yup = require('yup');
 const { pt } = require('yup-locales');
 const { setLocale } = require('yup');
@@ -14,11 +14,6 @@ const consultarPerfil = (req, res) => {
 const atualizarPerfil = async (req, res) => {
   const usuario = req.usuario;
   const { nome, email, senha, nome_loja: nomeLoja } = req.body;
-  const schema = yup.object().shape({
-    email: yup.string().email().required(),
-    senha: yup.string().required(),
-    nome: yup.string().required(),
-    nome_loja: yup.string().required()});
 
   try {
     await schema.validate(req.body);
