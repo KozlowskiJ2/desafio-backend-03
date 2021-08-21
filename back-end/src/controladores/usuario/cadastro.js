@@ -1,16 +1,17 @@
-const conexao = require('../conexao');
-const {verificaEmail, verificaNome, verificaSenha, verificaLoja} = require('../filtros/verificaCampos');
+const conexao = require('../../servicos/conexao');
+const yup = require('yup');
+const { pt } = require('yup-locales');
+const schema = require('../../modelos/yupCadastroUsuario');
+const { setLocale } = require('yup');
+setLocale(pt);
 const bcrypt = require('bcrypt');
 
 const cadastrarUsuario = async (req, res) => {
   const {nome, email, senha, nome_loja: nomeLoja} = req.body;
 
-  verificaEmail(email, res);
-  verificaNome(nome, res);
-  verificaSenha(senha, res);
-  verificaLoja(nomeLoja, res);
-
   try {
+    await schema.validate(req.body);
+
     const consultarEmail = 'select * from usuarios where email = $1';
     const {rowCount: emailDuplicado} = await conexao.query(consultarEmail, [email]);
 
